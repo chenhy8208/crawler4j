@@ -17,8 +17,6 @@
 
 package edu.uci.ics.crawler4j.crawler;
 
-import static org.apache.poi.hslf.record.OEPlaceholderAtom.Object;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -444,7 +442,7 @@ public class CrawlController extends Configurable {
         }
     }
 
-    public void addRepeatVisitSeed(String pageUrl,int docId) {
+    public void addRepeatVisitSeed(String pageUrl, int docId) {
         //深度设置为1，就是说从列表页重新更新一次，内容重新更新一次，就完了。
         addRepeatVisitSeed(pageUrl, docId, (short)1);
     }
@@ -455,7 +453,7 @@ public class CrawlController extends Configurable {
      * @param docId
      * @param repeatDeep
      */
-    public void addRepeatVisitSeed(String pageUrl,int docId, short repeatDeep) {
+    public void addRepeatVisitSeed(String pageUrl, int docId, short repeatDeep) {
         String canonicalUrl = URLCanonicalizer.getCanonicalURL(pageUrl);
         if (canonicalUrl == null) {
             logger.error("Invalid seed URL: {}", pageUrl);
