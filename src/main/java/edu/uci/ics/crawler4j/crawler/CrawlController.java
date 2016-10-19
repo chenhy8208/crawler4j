@@ -17,6 +17,8 @@
 
 package edu.uci.ics.crawler4j.crawler;
 
+import static org.apache.poi.hslf.record.OEPlaceholderAtom.Object;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -433,6 +435,43 @@ public class CrawlController extends Configurable {
             webUrl.setURL(canonicalUrl);
             webUrl.setDocid(docId);
             webUrl.setDepth((short) 0);
+            if (robotstxtServer.allows(webUrl)) {
+                frontier.schedule(webUrl);
+            } else {
+                // using the WARN level here, as the user specifically asked to add this seed
+                logger.warn("Robots.txt does not allow this seed: {}", pageUrl);
+            }
+        }
+    }
+
+    public void addRepeatVisitSeed(String pageUrl,int docId) {
+        //深度设置为1，就是说从列表页重新更新一次，内容重新更新一次，就完了。
+        addRepeatVisitSeed(pageUrl, docId, (short)1);
+    }
+
+    /**
+     * 重新再爬一次页面，处理是该页面有更新
+     * @param pageUrl
+     * @param docId
+     * @param repeatDeep
+     */
+    public void addRepeatVisitSeed(String pageUrl,int docId, short repeatDeep) {
+        String canonicalUrl = URLCanonicalizer.getCanonicalURL(pageUrl);
+        if (canonicalUrl == null) {
+            logger.error("Invalid seed URL: {}", pageUrl);
+        } else {
+
+            try {
+                docIdServer.addUrlAndDocId(canonicalUrl, docId);
+            } catch (Exception e) {
+                logger.error("Could not add seed: {}", e.getMessage());
+            }
+
+            WebURL webUrl = new WebURL();
+            webUrl.setURL(canonicalUrl);
+            webUrl.setDocid(docId);
+            webUrl.setDepth(repeatDeep);
+
             if (robotstxtServer.allows(webUrl)) {
                 frontier.schedule(webUrl);
             } else {
