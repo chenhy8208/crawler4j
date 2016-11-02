@@ -125,10 +125,20 @@ public class DocIDServer extends Configurable {
                 throw new Exception("Doc id: " + prevDocid + " is already assigned to URL: " + url);
             }
 
-            docIDsDB.put(null, new DatabaseEntry(url.getBytes()),
-                         new DatabaseEntry(Util.int2ByteArray(docId)));
-            lastDocID = docId;
+            putUrlAndIdInDB(url, docId);
         }
+    }
+
+    public void addRepeatUrlAndDocId(String url, int docId) throws Exception {
+        synchronized (mutex) {
+            putUrlAndIdInDB(url, docId);
+        }
+    }
+
+    private void putUrlAndIdInDB(String url, int docId) {
+        docIDsDB.put(null, new DatabaseEntry(url.getBytes()),
+                     new DatabaseEntry(Util.int2ByteArray(docId)));
+        lastDocID = docId;
     }
 
     public boolean isSeenBefore(String url) {

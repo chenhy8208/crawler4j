@@ -460,7 +460,7 @@ public class CrawlController extends Configurable {
         } else {
 
             try {
-                docIdServer.addUrlAndDocId(canonicalUrl, docId);
+                docIdServer.addRepeatUrlAndDocId(canonicalUrl, docId);
             } catch (Exception e) {
                 logger.error("Could not add seed: {}", e.getMessage());
             }
